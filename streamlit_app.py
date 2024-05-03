@@ -13,6 +13,7 @@ tabs = st.sidebar.radio("Navigation", ("Logistic Regression Model", "Chatbot"))
 # Tab: Logistic Regression Model
 if tabs == "Logistic Regression Model":
     st.title("Logistic Regression Model")
+
     # Load the saved logistic regression model
     with open('logistic_regression_model.pkl', 'rb') as f:
         model = pickle.load(f)
@@ -50,7 +51,35 @@ if tabs == "Logistic Regression Model":
         probability = model.predict_proba(input_features_processed)[0][1]
         return prediction, probability
 
-    # Your logistic regression model UI code here
+    # Input fields for each feature
+    st.subheader("Enter Patient Details:")
+    anemia_category = st.selectbox("Anemia Category", ("None", "Mild", "Moderate", "Severe"))
+    grade_of_kidney_disease = st.selectbox("Grade of Kidney Disease", ("G1", "G2", "G3a", "G3b", "G4", "G5"))
+    surg_risk_category = st.selectbox("Surgical Risk Category", ("Low", "Moderate", "High"))
+    asa_category_binned = st.selectbox("ASA Category Binned", ("I", "II", "III", "IV-VI"))
+    gender = st.radio("Gender", ("Male", "Female"))
+    anaestype_category = st.radio("Anesthesia Type Category", ("GA", "RA"))
+    priority_category = st.radio("Priority Category", ("Elective", "Emergency"))
+    rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
+    race_category = st.selectbox("Race Category", ("Chinese", "Others", "Indian", "Malay"))
+
+    input_features = {
+        'Anemia category': anemia_category,
+        'GradeofKidneydisease': grade_of_kidney_disease,
+        'SurgRiskCategory': surg_risk_category,
+        'ASAcategorybinned': asa_category_binned,
+        'GENDER': gender,
+        'AnaestypeCategory': anaestype_category,
+        'PriorityCategory': priority_category,
+        'RDW15.7': rdw15_7,
+        'RaceCategory': race_category
+    }
+
+    # Prediction button
+    if st.button("Predict"):
+        prediction, probability = predict_icu(input_features)
+        st.write(f"Prediction: {prediction}")
+        st.write(f"Probability: {probability}")
 
 # Tab: Chatbot
 elif tabs == "Chatbot":
