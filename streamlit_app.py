@@ -10,6 +10,17 @@ st.set_page_config(page_title="Logistic Regression & Chatbot UI")
 # Create tabs
 tabs = st.sidebar.radio("Navigation", ("Logistic Regression Model", "Chatbot"))
 
+# Define encoding mappings
+Anemia_category_mapping = {"none": 0, "mild": 1, "moderate": 2, "severe": 3}
+GradeofKidneydisease_mapping = {"g1": 1, "G2": 2, "G3a": 3.1, "G3b": 3.2, "G4": 4, "G5": 5}
+SurgRiskCategory_mapping = {"Low": 1, "Moderate": 2, "High": 3}
+ASAcategorybinned_mapping = {"I": 1, "II": 2, "III": 3, "IV-VI": 4}
+RaceCategory_mapping = {"Chinese": 1, "Others": 2, "Indian": 3, "Malay": 4}
+GENDER_mapping = {'MALE': 1, 'FEMALE': 0}
+AnaestypeCategory_mapping = {'GA': 0, 'RA': 1}
+PriorityCategory_mapping = {'Elective': 0, 'Emergency': 1}
+RDW15_7_mapping = {'<= 15.7': 0, '>15.7': 1}
+
 # Tab: Logistic Regression Model
 if tabs == "Logistic Regression Model":
     st.title("Logistic Regression Model")
@@ -17,17 +28,6 @@ if tabs == "Logistic Regression Model":
     # Load the saved logistic regression model
     with open('logistic_regression_model.pkl', 'rb') as f:
         model = pickle.load(f)
-
-    # Define encoding mappings
-    Anemia_category_mapping = {"none": 0, "mild": 1, "moderate": 2, "severe": 3}
-    GradeofKidneydisease_mapping = {"g1": 1, "G2": 2, "G3a": 3.1, "G3b": 3.2, "G4": 4, "G5": 5}
-    SurgRiskCategory_mapping = {"Low": 1, "Moderate": 2, "High": 3}
-    ASAcategorybinned_mapping = {"I": 1, "II": 2, "III": 3, "IV-VI": 4}
-    RaceCategory_mapping = {"Chinese": 1, "Others": 2, "Indian": 3, "Malay": 4}
-    GENDER_mapping = {'MALE': 1, 'FEMALE': 0}
-    AnaestypeCategory_mapping = {'GA': 0, 'RA': 1}
-    PriorityCategory_mapping = {'Elective': 0, 'Emergency': 1}
-    RDW15_7_mapping = {'<= 15.7': 0, '>15.7': 1}
 
     # Define function to preprocess input features
     def preprocess_features(features):
@@ -39,8 +39,7 @@ if tabs == "Logistic Regression Model":
         features['AnaestypeCategory'] = AnaestypeCategory_mapping.get(features['AnaestypeCategory'].upper(), 0)
         features['PriorityCategory'] = PriorityCategory_mapping.get(features['PriorityCategory'].upper(), 0)
         features['RDW15.7'] = RDW15_7_mapping.get(features['RDW15.7'].lower(), 0)
-        race_category = features['RaceCategory'].lower()
-        features['RaceCategory'] = RaceCategory_mapping.get(race_category, RaceCategory_mapping['Others'])
+        features['RaceCategory'] = RaceCategory_mapping.get(features['RaceCategory'].lower(), 2)  # Default to 'Others' if not found
         return features
 
     # Define function to make predictions
@@ -64,7 +63,9 @@ if tabs == "Logistic Regression Model":
     surg_risk_category = st.selectbox("Surgical Risk Category", ("Low", "Moderate", "High"))
     race_category = st.selectbox("Race Category", ("Chinese", "Others", "Indian", "Malay"))
     rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
-    
+    asa_category_binned = st.selectbox("ASA Category Binned", ("I", "II", "III", "IV-VI"))
+
+    # Prepare input features dictionary
     input_features = {
         'AGE': age,
         'GENDER': gender,
@@ -76,7 +77,8 @@ if tabs == "Logistic Regression Model":
         'PriorityCategory': priority_category,
         'SurgRiskCategory': surg_risk_category,
         'RaceCategory': race_category,
-        'RDW15.7': rdw15_7
+        'RDW15.7': rdw15_7,
+        'ASAcategorybinned': asa_category_binned
     }
 
     # Prediction button
