@@ -62,6 +62,9 @@ if tabs == "Logistic Regression Model":
     priority_category = st.radio("Priority Category", ("Elective", "Emergency"))
     rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
     race_category = st.selectbox("Race Category", ("Chinese", "Others", "Indian", "Malay"))
+    age = st.number_input("Age")
+    preop_egfr_mdrd = st.number_input("PreopEGFRMDRD")
+    rcri_score = st.number_input("RCRI score")
 
     input_features = {
         'Anemia category': anemia_category,
@@ -72,7 +75,10 @@ if tabs == "Logistic Regression Model":
         'AnaestypeCategory': anaestype_category,
         'PriorityCategory': priority_category,
         'RDW15.7': rdw15_7,
-        'RaceCategory': race_category
+        'RaceCategory': race_category,
+        'AGE': age,
+        'PreopEGFRMDRD': preop_egfr_mdrd,
+        'RCRI score': rcri_score
     }
 
     # Prediction button
