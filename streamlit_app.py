@@ -53,32 +53,30 @@ if tabs == "Logistic Regression Model":
 
     # Input fields for each feature
     st.subheader("Enter Patient Details:")
+    age = st.slider("Age", min_value=0, max_value=120, step=1, value=40)
+    gender = st.selectbox("Gender", ("Male", "Female"))
+    rcri_score = st.slider("RCRI score", min_value=0.0, max_value=10.0, step=0.1, value=5.0)
     anemia_category = st.selectbox("Anemia Category", ("None", "Mild", "Moderate", "Severe"))
+    preop_egfr_mdrd = st.slider("PreopEGFRMDRD", min_value=0.0, max_value=200.0, step=0.1, value=100.0)
     grade_of_kidney_disease = st.selectbox("Grade of Kidney Disease", ("G1", "G2", "G3a", "G3b", "G4", "G5"))
+    anaestype_category = st.selectbox("Anesthesia Type Category", ("GA", "RA"))
+    priority_category = st.selectbox("Priority Category", ("Elective", "Emergency"))
     surg_risk_category = st.selectbox("Surgical Risk Category", ("Low", "Moderate", "High"))
-    asa_category_binned = st.selectbox("ASA Category Binned", ("I", "II", "III", "IV-VI"))
-    gender = st.radio("Gender", ("Male", "Female"))
-    anaestype_category = st.radio("Anesthesia Type Category", ("GA", "RA"))
-    priority_category = st.radio("Priority Category", ("Elective", "Emergency"))
-    rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
     race_category = st.selectbox("Race Category", ("Chinese", "Others", "Indian", "Malay"))
-    age = st.number_input("Age")
-    preop_egfr_mdrd = st.number_input("PreopEGFRMDRD")
-    rcri_score = st.number_input("RCRI score")
-
+    rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
+    
     input_features = {
-        'Anemia category': anemia_category,
-        'GradeofKidneydisease': grade_of_kidney_disease,
-        'SurgRiskCategory': surg_risk_category,
-        'ASAcategorybinned': asa_category_binned,
+        'AGE': age,
         'GENDER': gender,
+        'RCRI score': rcri_score,
+        'Anemia category': anemia_category,
+        'PreopEGFRMDRD': preop_egfr_mdrd,
+        'GradeofKidneydisease': grade_of_kidney_disease,
         'AnaestypeCategory': anaestype_category,
         'PriorityCategory': priority_category,
-        'RDW15.7': rdw15_7,
+        'SurgRiskCategory': surg_risk_category,
         'RaceCategory': race_category,
-        'AGE': age,
-        'PreopEGFRMDRD': preop_egfr_mdrd,
-        'RCRI score': rcri_score
+        'RDW15.7': rdw15_7
     }
 
     # Prediction button
