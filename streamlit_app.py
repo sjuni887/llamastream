@@ -4,55 +4,6 @@ import pandas as pd
 import replicate
 import os
 
-# Load the saved logistic regression model
-with open('logistic_regression_model.pkl', 'rb') as f:
-    model = pickle.load(f)
-
-# Define encoding mappings
-Anemia_category_mapping = {"none": 0, "mild": 1, "moderate": 2, "severe": 3}
-GradeofKidneydisease_mapping = {"g1": 1, "G2": 2, "G3a": 3.1, "G3b": 3.2, "G4": 4, "G5": 5}
-SurgRiskCategory_mapping = {"Low": 1, "Moderate": 2, "High": 3}
-ASAcategorybinned_mapping = {"I": 1, "II": 2, "III": 3, "IV-VI": 4}
-RaceCategory_mapping = {"Chinese": 1, "Others": 2, "Indian": 3, "Malay": 4}
-GENDER_mapping = {'MALE': 1, 'FEMALE': 0}
-AnaestypeCategory_mapping = {'GA': 0, 'RA': 1}
-PriorityCategory_mapping = {'Elective': 0, 'Emergency': 1}
-RDW15_7_mapping = {'<= 15.7': 0, '>15.7': 1}
-
-# Define function to preprocess input features
-def preprocess_features(features):
-    features['Anemia category'] = Anemia_category_mapping.get(features['Anemia category'].lower(), 0)
-    features['GradeofKidneydisease'] = GradeofKidneydisease_mapping.get(features['GradeofKidneydisease'].lower(), 1)
-    features['SurgRiskCategory'] = SurgRiskCategory_mapping.get(features['SurgRiskCategory'].lower(), 1)
-    features['ASAcategorybinned'] = ASAcategorybinned_mapping.get(features['ASAcategorybinned'].lower(), 1)
-    features['GENDER'] = GENDER_mapping.get(features['GENDER'].upper(), 0)
-    features['AnaestypeCategory'] = AnaestypeCategory_mapping.get(features['AnaestypeCategory'].upper(), 0)
-    features['PriorityCategory'] = PriorityCategory_mapping.get(features['PriorityCategory'].upper(), 0)
-    features['RDW15.7'] = RDW15_7_mapping.get(features['RDW15.7'].lower(), 0)
-    race_category = features['RaceCategory'].lower()
-    features['RaceCategory'] = RaceCategory_mapping.get(race_category, RaceCategory_mapping['Others'])
-    return features
-
-# Define function to make predictions
-def predict_icu(input_features):
-    input_features_processed = preprocess_features(input_features)
-    input_features_processed = pd.DataFrame(input_features_processed, index=[0])
-    prediction = model.predict(input_features_processed)
-    probability = model.predict_proba(input_features_processed)[0][1]
-    return prediction, probability
-
-# Define function for generating LLaMA2 response
-def generate_llama2_response(prompt_input):
-    string_dialogue = "You are a helpful assistant. You do not respond as 'User' or pretend to be 'User'. You only respond once as 'Assistant'."
-    for dict_message in st.session_state.messages:
-        if dict_message["role"] == "user":
-            string_dialogue += "User: " + dict_message["content"] + "\n\n"
-        else:
-            string_dialogue += "Assistant: " + dict_message["content"] + "\n\n"
-    output = replicate.run(llm, input={"prompt": f"{string_dialogue} {prompt_input} Assistant: ",
-                                        "temperature":temperature, "top_p":top_p, "max_length":max_length, "repetition_penalty":1})
-    return output
-
 # App title
 st.set_page_config(page_title="Logistic Regression & Chatbot UI")
 
@@ -62,6 +13,43 @@ tabs = st.sidebar.radio("Navigation", ("Logistic Regression Model", "Chatbot"))
 # Tab: Logistic Regression Model
 if tabs == "Logistic Regression Model":
     st.title("Logistic Regression Model")
+    # Load the saved logistic regression model
+    with open('logistic_regression_model.pkl', 'rb') as f:
+        model = pickle.load(f)
+
+    # Define encoding mappings
+    Anemia_category_mapping = {"none": 0, "mild": 1, "moderate": 2, "severe": 3}
+    GradeofKidneydisease_mapping = {"g1": 1, "G2": 2, "G3a": 3.1, "G3b": 3.2, "G4": 4, "G5": 5}
+    SurgRiskCategory_mapping = {"Low": 1, "Moderate": 2, "High": 3}
+    ASAcategorybinned_mapping = {"I": 1, "II": 2, "III": 3, "IV-VI": 4}
+    RaceCategory_mapping = {"Chinese": 1, "Others": 2, "Indian": 3, "Malay": 4}
+    GENDER_mapping = {'MALE': 1, 'FEMALE': 0}
+    AnaestypeCategory_mapping = {'GA': 0, 'RA': 1}
+    PriorityCategory_mapping = {'Elective': 0, 'Emergency': 1}
+    RDW15_7_mapping = {'<= 15.7': 0, '>15.7': 1}
+
+    # Define function to preprocess input features
+    def preprocess_features(features):
+        features['Anemia category'] = Anemia_category_mapping.get(features['Anemia category'].lower(), 0)
+        features['GradeofKidneydisease'] = GradeofKidneydisease_mapping.get(features['GradeofKidneydisease'].lower(), 1)
+        features['SurgRiskCategory'] = SurgRiskCategory_mapping.get(features['SurgRiskCategory'].lower(), 1)
+        features['ASAcategorybinned'] = ASAcategorybinned_mapping.get(features['ASAcategorybinned'].lower(), 1)
+        features['GENDER'] = GENDER_mapping.get(features['GENDER'].upper(), 0)
+        features['AnaestypeCategory'] = AnaestypeCategory_mapping.get(features['AnaestypeCategory'].upper(), 0)
+        features['PriorityCategory'] = PriorityCategory_mapping.get(features['PriorityCategory'].upper(), 0)
+        features['RDW15.7'] = RDW15_7_mapping.get(features['RDW15.7'].lower(), 0)
+        race_category = features['RaceCategory'].lower()
+        features['RaceCategory'] = RaceCategory_mapping.get(race_category, RaceCategory_mapping['Others'])
+        return features
+
+    # Define function to make predictions
+    def predict_icu(input_features):
+        input_features_processed = preprocess_features(input_features)
+        input_features_processed = pd.DataFrame(input_features_processed, index=[0])
+        prediction = model.predict(input_features_processed)
+        probability = model.predict_proba(input_features_processed)[0][1]
+        return prediction, probability
+
     # Your logistic regression model UI code here
 
 # Tab: Chatbot
