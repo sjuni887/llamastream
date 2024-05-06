@@ -91,16 +91,14 @@ if tabs == "Logistic Regression Model":
             
             # Format prediction
             if prediction == 1:
-                st.write("**ICU required**", font_size=24)  # Increase font size for prediction
+                st.write("**ICU required**")
             else:
-                st.write("ICU not required", font_size=24)
+                st.write("ICU not required")
             
             # Format probability
             probability_percent = round(probability * 100, 2)
-            if probability_percent > 80:
-                st.write(f"Probability: <font color='green'>{probability_percent}%</font>", unsafe_allow_html=True)
-            else:
-                st.write(f"Probability: <font color='red'>{probability_percent}%</font>", unsafe_allow_html=True)
+            st.write(f"Probability: {probability_percent}%")
+
 
             
 # Tab: Chatbot
