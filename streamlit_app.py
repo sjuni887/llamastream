@@ -89,7 +89,7 @@ if tabs == "Logistic Regression Model":
         with st.spinner("Predicting..."):
             prediction, probability = predict_icu(input_features)
             st.write(prediction)
-            st.metric("ICU Need Prediction", "Yes" if prediction == 1 else "No", delta=str(round(probability * 100, 2)) + "% chance")
+             st.write(f"**Probability:** {probability:.2f}", font_size=20)
 
             
 # Tab: Chatbot
