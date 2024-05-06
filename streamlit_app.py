@@ -83,24 +83,15 @@ if tabs == "Logistic Regression Model":
         'RDW15.7': rdw15_7,
         'ASAcategorybinned': asa_category_binned
     }
+
     # Prediction button
     if st.button("Predict"):
         with st.spinner("Predicting..."):
             prediction, probability = predict_icu(input_features)
             st.success("Prediction made successfully!")
-            
-            # Format prediction
-            if prediction == 1:
-                st.write("**ICU required**")
-            else:
-                st.write("ICU not required")
-            
-            # Format probability
-            probability_percent = round(probability * 100, 2)
-            st.write(f"Probability: {probability_percent}%")
+            st.write(f"Prediction: {prediction}")
+            st.write(f"Probability: {probability}")
 
-
-            
 # Tab: Chatbot
 elif tabs == "Chatbot":
     st.title("🦙💬 Llama 2 Chatbot")
