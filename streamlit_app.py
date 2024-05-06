@@ -84,12 +84,11 @@ if tabs == "Logistic Regression Model":
         'ASAcategorybinned': asa_category_binned
     }
 
-    # Prediction button
     if st.button("Predict"):
         with st.spinner("Predicting..."):
             prediction, probability = predict_icu(input_features)
-            st.write(f"Prediction: {prediction}")
-            st.write(f"Probability: {probability}")
+            st.write(f"Prediction: **{prediction}**")
+            st.write(f"Probability: {probability*100:.2f}%")
 
 # Tab: Chatbot
 elif tabs == "Chatbot":
