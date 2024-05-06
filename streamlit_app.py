@@ -83,7 +83,7 @@ if tabs == "Logistic Regression Model":
         'RDW15.7': rdw15_7,
         'ASAcategorybinned': asa_category_binned
     }
-
+    # Prediction button
     if st.button("Predict"):
         with st.spinner("Predicting..."):
             prediction, probability = predict_icu(input_features)
@@ -91,13 +91,17 @@ if tabs == "Logistic Regression Model":
             
             # Format prediction
             if prediction == 1:
-                st.write("**ICU required**")
+                st.write("**ICU required**", font_size=24)  # Increase font size for prediction
             else:
-                st.write("ICU not required")
+                st.write("ICU not required", font_size=24)
             
             # Format probability
             probability_percent = round(probability * 100, 2)
-            st.write(f"Probability: {probability_percent}%")
+            if probability_percent > 80:
+                st.write(f"Probability: <font color='green'>{probability_percent}%</font>", unsafe_allow_html=True)
+            else:
+                st.write(f"Probability: <font color='red'>{probability_percent}%</font>", unsafe_allow_html=True)
+
             
 # Tab: Chatbot
 elif tabs == "Chatbot":
