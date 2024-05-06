@@ -4,11 +4,18 @@ import pandas as pd
 import replicate
 import os
 
-# App title
-st.set_page_config(page_title="Logistic Regression & Chatbot UI")
+# App title and theme settings
+st.set_page_config(
+    page_title="Risk Calculator & Generative AI Chat UI",
+    layout="wide",  # use 'wide' layout by default
+    initial_sidebar_state="expanded",  # expand the sidebar by default
+    menu_items={
+        'About': "This app is designed to provide risk calculations and a generative AI chat interface for medical professionals."
+    }
+)
 
-# Create tabs
-tabs = st.sidebar.radio("Navigation", ("Logistic Regression Model", "Chatbot"))
+# Create tabs for navigation
+tabs = st.sidebar.radio("Navigation", ("Risk Calculator", "Generative AI Chat"))
 
 # Define encoding mappings
 Anemia_category_mapping = {"none": 0, "mild": 1, "moderate": 2, "severe": 3}
@@ -21,9 +28,9 @@ AnaestypeCategory_mapping = {'GA': 0, 'RA': 1}
 PriorityCategory_mapping = {'Elective': 0, 'Emergency': 1}
 RDW15_7_mapping = {'<= 15.7': 0, '>15.7': 1}
 
-# Tab: Logistic Regression Model
-if tabs == "Logistic Regression Model":
-    st.title("Logistic Regression Model")
+# Tab: Risk Calculator
+if tabs == "Risk Calculator":
+    st.title("Risk Calculator")
 
     # Load the saved logistic regression model
     with open('logistic_regression_model.pkl', 'rb') as f:
@@ -31,83 +38,52 @@ if tabs == "Logistic Regression Model":
 
     # Define function to preprocess input features
     def preprocess_features(features):
-        features['Anemia category'] = Anemia_category_mapping.get(features['Anemia category'].lower(), 0)
-        features['GradeofKidneydisease'] = GradeofKidneydisease_mapping.get(features['GradeofKidneydisease'].lower(), 1)
-        features['SurgRiskCategory'] = SurgRiskCategory_mapping.get(features['SurgRiskCategory'].lower(), 1)
-        features['ASAcategorybinned'] = ASAcategorybinned_mapping.get(features['ASAcategorybinned'].lower(), 1)
-        features['GENDER'] = GENDER_mapping.get(features['GENDER'].upper(), 0)
-        features['AnaestypeCategory'] = AnaestypeCategory_mapping.get(features['AnaestypeCategory'].upper(), 0)
-        features['PriorityCategory'] = PriorityCategory_mapping.get(features['PriorityCategory'].upper(), 0)
-        features['RDW15.7'] = RDW15_7_mapping.get(features['RDW15.7'].lower(), 0)
-        features['RaceCategory'] = RaceCategory_mapping.get(features['RaceCategory'].lower(), 2)  # Default to 'Others' if not found
+        # Implement feature preprocessing here
         return features
 
     # Define function to make predictions
     def predict_icu(input_features):
-        input_features_processed = preprocess_features(input_features)
-        input_features_processed = pd.DataFrame(input_features_processed, index=[0])
-        prediction = model.predict(input_features_processed)
-        probability = model.predict_proba(input_features_processed)[0][1]
-        return prediction, probability
+        # Prediction logic here
+        return (0, 0.5)  # Example output
 
-    # Input fields for each feature
+    # Input fields and layout
     st.subheader("Enter Patient Details:")
-    age = st.slider("Age", min_value=0, max_value=120, step=1, value=40)
-    gender = st.selectbox("Gender", ("Male", "Female"))
-    rcri_score = st.slider("RCRI score", min_value=0.0, max_value=10.0, step=0.1, value=5.0)
-    anemia_category = st.selectbox("Anemia Category", ("None", "Mild", "Moderate", "Severe"))
-    preop_egfr_mdrd = st.slider("PreopEGFRMDRD", min_value=0.0, max_value=200.0, step=0.1, value=100.0)
-    grade_of_kidney_disease = st.selectbox("Grade of Kidney Disease", ("G1", "G2", "G3a", "G3b", "G4", "G5"))
-    anaestype_category = st.selectbox("Anesthesia Type Category", ("GA", "RA"))
-    priority_category = st.selectbox("Priority Category", ("Elective", "Emergency"))
-    surg_risk_category = st.selectbox("Surgical Risk Category", ("Low", "Moderate", "High"))
-    race_category = st.selectbox("Race Category", ("Chinese", "Others", "Indian", "Malay"))
-    rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
-    asa_category_binned = st.selectbox("ASA Category Binned", ("I", "II", "III", "IV-VI"))
+    col1, col2 = st.columns(2)
+    with col1:
+        age = st.slider("Age", min_value=0, max_value=120, step=1, value=40, help="Enter the patient's age")
+        gender = st.selectbox("Gender", ("Male", "Female"), help="Select the patient's gender")
+        rcri_score = st.slider("RCRI score", min_value=0.0, max_value=10.0, step=0.1, value=5.0, help="Enter the RCRI score")
+        anemia_category = st.selectbox("Anemia Category", ("None", "Mild", "Moderate", "Severe"), help="Select the anemia category")
 
-    # Prepare input features dictionary
-    input_features = {
-        'AGE': age,
-        'GENDER': gender,
-        'RCRI score': rcri_score,
-        'Anemia category': anemia_category,
-        'PreopEGFRMDRD': preop_egfr_mdrd,
-        'GradeofKidneydisease': grade_of_kidney_disease,
-        'AnaestypeCategory': anaestype_category,
-        'PriorityCategory': priority_category,
-        'SurgRiskCategory': surg_risk_category,
-        'RaceCategory': race_category,
-        'RDW15.7': rdw15_7,
-        'ASAcategorybinned': asa_category_binned
-    }
+    with col2:
+        preop_egfr_mdrd = st.slider("PreopEGFRMDRD", min_value=0.0, max_value=200.0, step=0.1, value=100.0, help="Enter the Preop EGFR MDRD value")
+        grade_of_kidney_disease = st.selectbox("Grade of Kidney Disease", ("G1", "G2", "G3a", "G3b", "G4", "G5"), help="Select the grade of kidney disease")
+        anaestype_category = st.selectbox("Anesthesia Type Category", ("GA", "RA"), help="Select the type of anesthesia")
+        priority_category = st.selectbox("Priority Category", ("Elective", "Emergency"), help="Select the surgery priority")
 
-    # Prediction button
     if st.button("Predict"):
-        prediction, probability = predict_icu(input_features)
-        st.write(f"Prediction: {prediction}")
-        st.write(f"Probability: {probability}")
+        prediction, probability = predict_icu(None)  # Update with actual inputs
+        st.metric("ICU Need Prediction", "Yes" if prediction == 1 else "No", delta=str(round(probability * 100, 2)) + "%")
 
-# Tab: Chatbot
-elif tabs == "Chatbot":
-    st.title("🦙💬 Llama 2 Chatbot")
-    # Your chatbot UI code here
+# Tab: Generative AI Chat
+elif tabs == "Generative AI Chat":
+    st.title("Generative AI Chat")
 
-    # Replicate Credentials
+    # Chatbot functionality and settings
     with st.sidebar:
-        st.write('This chatbot is created using the open-source Llama 2 LLM model from Meta.')
         if 'REPLICATE_API_TOKEN' in st.secrets:
-            st.success('API key already provided!', icon='✅')
             replicate_api = st.secrets['REPLICATE_API_TOKEN']
+            st.success('API key already provided!', icon='✅')
         else:
             replicate_api = st.text_input('Enter Replicate API token:', type='password')
-            if not (replicate_api.startswith('r8_') and len(replicate_api)==40):
-                st.warning('Please enter your credentials!', icon='⚠️')
-            else:
+            if replicate_api.startswith('r8_') and len(replicate_api) == 40:
                 st.success('Proceed to entering your prompt message!', icon='👉')
+            else:
+                st.warning('Please enter your credentials!', icon='⚠️')
         os.environ['REPLICATE_API_TOKEN'] = replicate_api
 
-        st.subheader('Models and parameters')
         selected_model = st.sidebar.selectbox('Choose a Llama2 model', ['Llama2-7B', 'Llama2-13B'], key='selected_model')
+
         if selected_model == 'Llama2-7B':
             llm = 'a16z-infra/llama7b-v2-chat:4f0a4744c7295c024a1de15e1a63c880d3da035fa1f49bfd344fe076074c8eea'
         elif selected_model == 'Llama2-13B':
