@@ -88,8 +88,8 @@ if tabs == "Logistic Regression Model":
     if st.button("Predict"):
         with st.spinner("Predicting..."):
             prediction, probability = predict_icu(input_features)
-            st.write(f"**Prediction:** {prediction}", font_size=25)
-            st.write(f"**Probability:** {probability:.2f}%", font_size=20)
+            st.write(f"**Prediction:** {prediction}", font_size=40)
+            st.write(f"**Probability:** {probability:.2f}%", font_size=40)
             
 # Tab: Chatbot
 elif tabs == "Chatbot":
