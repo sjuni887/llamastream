@@ -5,10 +5,10 @@ import replicate
 import os
 
 # App title
-st.set_page_config(page_title="ICU Admission Prediction & Chatbot UI")
+st.set_page_config(page_title="Logistic Regression & Chatbot UI")
 
 # Create tabs
-tabs = st.sidebar.radio("Navigation", ("ICU Admission Prediction", "Chatbot"))
+tabs = st.sidebar.radio("Navigation", ("Logistic Regression Model", "Chatbot"))
 
 # Define encoding mappings
 Anemia_category_mapping = {"none": 0, "mild": 1, "moderate": 2, "severe": 3}
@@ -21,9 +21,9 @@ AnaestypeCategory_mapping = {'GA': 0, 'RA': 1}
 PriorityCategory_mapping = {'Elective': 0, 'Emergency': 1}
 RDW15_7_mapping = {'<= 15.7': 0, '>15.7': 1}
 
-# Tab: ICU Admission Prediction
-if tabs == "ICU Admission Prediction":
-    st.title("ICU Admission Prediction")
+# Tab: Logistic Regression Model
+if tabs == "Logistic Regression Model":
+    st.title("Logistic Regression Model")
 
     # Load the saved logistic regression model
     with open('logistic_regression_model.pkl', 'rb') as f:
@@ -56,13 +56,14 @@ if tabs == "ICU Admission Prediction":
     gender = st.selectbox("Gender", ("Male", "Female"))
     rcri_score = st.slider("RCRI score", min_value=0.0, max_value=10.0, step=0.1, value=5.0)
     anemia_category = st.selectbox("Anemia Category", ("None", "Mild", "Moderate", "Severe"))
-    st.write("PreopEGFRMDRD, Grade of Kidney Disease, Anesthesia Type Category, Priority Category, Surgical Risk Category, Race Category, RDW15.7, ASA Category Binned")
-    input_text = st.text_area("Enter patient details in the format: PreopEGFRMDRD, GradeofKidneydisease, AnaestypeCategory, PriorityCategory, SurgRiskCategory, RaceCategory, RDW15.7, ASAcategorybinned", "4 4 4")
-    inputs = input_text.split()
-    if len(inputs) == 8:
-        preop_egfr_mdrd, grade_of_kidney_disease, anaestype_category, priority_category, surg_risk_category, race_category, rdw15_7, asa_category_binned = inputs
-    else:
-        preop_egfr_mdrd, grade_of_kidney_disease, anaestype_category, priority_category, surg_risk_category, race_category, rdw15_7, asa_category_binned = 4, 4, 4, 4, 4, 4, 4, 4
+    preop_egfr_mdrd = st.slider("PreopEGFRMDRD", min_value=0.0, max_value=200.0, step=0.1, value=100.0)
+    grade_of_kidney_disease = st.selectbox("Grade of Kidney Disease", ("G1", "G2", "G3a", "G3b", "G4", "G5"))
+    anaestype_category = st.selectbox("Anesthesia Type Category", ("GA", "RA"))
+    priority_category = st.selectbox("Priority Category", ("Elective", "Emergency"))
+    surg_risk_category = st.selectbox("Surgical Risk Category", ("Low", "Moderate", "High"))
+    race_category = st.selectbox("Race Category", ("Chinese", "Others", "Indian", "Malay"))
+    rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
+    asa_category_binned = st.selectbox("ASA Category Binned", ("I", "II", "III", "IV-VI"))
 
     # Prepare input features dictionary
     input_features = {
