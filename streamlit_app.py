@@ -89,7 +89,7 @@ if tabs == "Logistic Regression Model":
         with st.spinner("Predicting..."):
             prediction, probability = predict_icu(input_features)
             st.write(prediction)
-             st.write(f"**Probability:** {probability:.2f}", font_size=20)
+            st.write(f"**Probability:** {probability:.2f}", font_size=20)
 
             
 # Tab: Chatbot
