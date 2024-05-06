@@ -47,23 +47,22 @@ if tabs == "Logistic Regression Model":
         input_features_processed = preprocess_features(input_features)
         input_features_processed = pd.DataFrame(input_features_processed, index=[0])
         prediction = model.predict(input_features_processed)
-        probability = model.predict_proba(input_features_processed)[0][1] * 100
+        probability = model.predict_proba(input_features_processed)[0][1]
         return prediction, probability
 
     # Input fields for each feature
     st.subheader("Enter Patient Details:")
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
     with col1:
         age = st.slider("Age", min_value=0, max_value=120, step=1, value=40)
         gender = st.selectbox("Gender", ("Male", "Female"))
         rcri_score = st.slider("RCRI score", min_value=0.0, max_value=10.0, step=0.1, value=5.0)
         anemia_category = st.selectbox("Anemia Category", ("None", "Mild", "Moderate", "Severe"))
-    with col2:
         preop_egfr_mdrd = st.slider("PreopEGFRMDRD", min_value=0.0, max_value=200.0, step=0.1, value=100.0)
+    with col2:
         grade_of_kidney_disease = st.selectbox("Grade of Kidney Disease", ("G1", "G2", "G3a", "G3b", "G4", "G5"))
         anaestype_category = st.selectbox("Anesthesia Type Category", ("GA", "RA"))
         priority_category = st.selectbox("Priority Category", ("Elective", "Emergency"))
-    with col3:
         surg_risk_category = st.selectbox("Surgical Risk Category", ("Low", "Moderate", "High"))
         race_category = st.selectbox("Race Category", ("Chinese", "Others", "Indian", "Malay"))
         rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
@@ -89,11 +88,9 @@ if tabs == "Logistic Regression Model":
     if st.button("Predict"):
         with st.spinner("Predicting..."):
             prediction, probability = predict_icu(input_features)
-            if prediction[0] == 1:
-                st.success("ICU required")
-            else:
-                st.success("ICU not required")
-            st.write(f"Probability: {probability:.2f}%")
+            st.success("Prediction made successfully!")
+            st.write(f"Prediction: {prediction}")
+            st.write(f"Probability: {probability}")
 
 # Tab: Chatbot
 elif tabs == "Chatbot":
