@@ -52,18 +52,21 @@ if tabs == "Logistic Regression Model":
 
     # Input fields for each feature
     st.subheader("Enter Patient Details:")
-    age = st.slider("Age", min_value=0, max_value=120, step=1, value=40)
-    gender = st.selectbox("Gender", ("Male", "Female"))
-    rcri_score = st.slider("RCRI score", min_value=0.0, max_value=10.0, step=0.1, value=5.0)
-    anemia_category = st.selectbox("Anemia Category", ("None", "Mild", "Moderate", "Severe"))
-    preop_egfr_mdrd = st.slider("PreopEGFRMDRD", min_value=0.0, max_value=200.0, step=0.1, value=100.0)
-    grade_of_kidney_disease = st.selectbox("Grade of Kidney Disease", ("G1", "G2", "G3a", "G3b", "G4", "G5"))
-    anaestype_category = st.selectbox("Anesthesia Type Category", ("GA", "RA"))
-    priority_category = st.selectbox("Priority Category", ("Elective", "Emergency"))
-    surg_risk_category = st.selectbox("Surgical Risk Category", ("Low", "Moderate", "High"))
-    race_category = st.selectbox("Race Category", ("Chinese", "Others", "Indian", "Malay"))
-    rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
-    asa_category_binned = st.selectbox("ASA Category Binned", ("I", "II", "III", "IV-VI"))
+    col1, col2 = st.columns(2)
+    with col1:
+        age = st.slider("Age", min_value=0, max_value=120, step=1, value=40)
+        gender = st.selectbox("Gender", ("Male", "Female"))
+        rcri_score = st.slider("RCRI score", min_value=0.0, max_value=10.0, step=0.1, value=5.0)
+        anemia_category = st.selectbox("Anemia Category", ("None", "Mild", "Moderate", "Severe"))
+        preop_egfr_mdrd = st.slider("PreopEGFRMDRD", min_value=0.0, max_value=200.0, step=0.1, value=100.0)
+    with col2:
+        grade_of_kidney_disease = st.selectbox("Grade of Kidney Disease", ("G1", "G2", "G3a", "G3b", "G4", "G5"))
+        anaestype_category = st.selectbox("Anesthesia Type Category", ("GA", "RA"))
+        priority_category = st.selectbox("Priority Category", ("Elective", "Emergency"))
+        surg_risk_category = st.selectbox("Surgical Risk Category", ("Low", "Moderate", "High"))
+        race_category = st.selectbox("Race Category", ("Chinese", "Others", "Indian", "Malay"))
+        rdw15_7 = st.selectbox("RDW15.7", ("<= 15.7", ">15.7"))
+        asa_category_binned = st.selectbox("ASA Category Binned", ("I", "II", "III", "IV-VI"))
 
     # Prepare input features dictionary
     input_features = {
@@ -83,9 +86,10 @@ if tabs == "Logistic Regression Model":
 
     # Prediction button
     if st.button("Predict"):
-        prediction, probability = predict_icu(input_features)
-        st.write(f"Prediction: {prediction}")
-        st.write(f"Probability: {probability}")
+        with st.spinner("Predicting..."):
+            prediction, probability = predict_icu(input_features)
+            st.write(f"Prediction: {prediction}")
+            st.write(f"Probability: {probability}")
 
 # Tab: Chatbot
 elif tabs == "Chatbot":
